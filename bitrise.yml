@@ -26,7 +26,7 @@ workflows:
     - path::./:
         title: Step Test
         inputs:
-        - packages: github.com/mentatxx/bitrise-step-extract-gradle-version
+        - SOURCE_DIR: ../test
 
   dep-update:
     title: Dep update

@@ -67,7 +67,7 @@ toolkit:
 
 
 inputs:
-  - BITRISE_SOURCE_DIR: Path to where project source code is placed
+  - SOURCE_DIR: "$BITRISE_SOURCE_DIR"
     opts:
       title: "Source dir"
       summary: Path to project source code
@@ -90,3 +90,9 @@ outputs:
       summary: Number. Ex, 285
       description: |
         Version code fetched from the Gradle file
+  - REACT_APP_BUILD_NUMBER:
+    opts:
+      title: "Bitrise.io build number"
+      summary: Number. Ex, 2850
+      description: |
+        Value mirrored from BITRISE_BUILD_NUMBER to React app readable env var name

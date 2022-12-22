@@ -56,7 +56,8 @@ func extractVersionFromGradleFile(gradleFilePath string) (string, string, error)
 }
 
 func main() {
-	sourceDir := os.Getenv("BITRISE_SOURCE_DIR")
+	sourceDir := os.Getenv("SOURCE_DIR")
+	buildNumber := os.Getenv("BITRISE_BUILD_NUMBER")
 	versionName, versionCode, error := extractVersionFromGradleFile(sourceDir + "/android/app/build.gradle")
 	if error != nil {
 		fmt.Printf("Failed to extract version from gradle file, error: %#v", error)
@@ -75,6 +76,11 @@ func main() {
 		os.Exit(1)
 	}
 	cmdLog, err = exec.Command("bitrise", "envman", "add", "--key", "REACT_APP_VERSION_CODE", "--value", versionCode).CombinedOutput()
+	if err != nil {
+		fmt.Printf("Failed to expose output with envman, error: %#v | output: %s", err, cmdLog)
+		os.Exit(1)
+	}
+	cmdLog, err = exec.Command("bitrise", "envman", "add", "--key", "REACT_APP_BUILD_NUMBER", "--value", buildNumber).CombinedOutput()
 	if err != nil {
 		fmt.Printf("Failed to expose output with envman, error: %#v | output: %s", err, cmdLog)
 		os.Exit(1)
