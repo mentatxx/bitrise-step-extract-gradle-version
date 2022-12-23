@@ -16,6 +16,7 @@ import (
  */
 
 func extractVersionFromGradleFile(gradleFilePath string) (string, string, error) {
+	fmt.Printf("Extracting version from gradle file: %s", gradleFilePath)
 	file, err := os.Open(gradleFilePath)
 	if err != nil {
 		return "", "", err
@@ -34,8 +35,9 @@ func extractVersionFromGradleFile(gradleFilePath string) (string, string, error)
 	versionCodeRegexp := regexp.MustCompile(`versionCode\s*=\s*(\d+)`)
 	for fileScanner.Scan() {
 		line := fileScanner.Text()
+		fmt.Printf("Line: %s", line)
 		// Simple state machine. Looking for android -> defaultConfig and then versionName and versionCode
-		if state == 0 && line == "android {" {
+		if state == 0 && strings.Contains(line, "android {") {
 			state = 1
 		}
 		if state == 1 && strings.Contains(line, "defaultConfig {") {
