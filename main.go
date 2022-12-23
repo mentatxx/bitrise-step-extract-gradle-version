@@ -16,7 +16,6 @@ import (
  */
 
 func extractVersionFromGradleFile(gradleFilePath string) (string, string, error) {
-	fmt.Printf("Extracting version from gradle file: %s", gradleFilePath)
 	file, err := os.Open(gradleFilePath)
 	if err != nil {
 		return "", "", err
@@ -31,11 +30,10 @@ func extractVersionFromGradleFile(gradleFilePath string) (string, string, error)
 	state := 0
 	versionName := ""
 	versionCode := ""
-	versionNameRegexp := regexp.MustCompile(`versionName\s*=\s*'(.*)'`)
-	versionCodeRegexp := regexp.MustCompile(`versionCode\s*=\s*(\d+)`)
+	versionNameRegexp := regexp.MustCompile(`versionName\s+'(.*)'`)
+	versionCodeRegexp := regexp.MustCompile(`versionCode\s+(\d+)`)
 	for fileScanner.Scan() {
 		line := fileScanner.Text()
-		fmt.Printf("Line: %s", line)
 		// Simple state machine. Looking for android -> defaultConfig and then versionName and versionCode
 		if state == 0 && strings.Contains(line, "android {") {
 			state = 1
@@ -66,15 +64,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println("This is the value specified for the input 'example_step_input':", os.Getenv("example_step_input"))
-
 	//
 	// --- Step Outputs: Export Environment Variables for other Steps:
 	// You can export Environment Variables for other Steps with
 	//  envman, which is automatically installed by `bitrise setup`.
-	fmt.Printf("REACT_APP_VERSION_NAME = %s", versionName)
-	fmt.Printf("REACT_APP_VERSION_CODE = %s", versionCode)
-	fmt.Printf("REACT_APP_BUILD_NUMBER = %s", buildNumber)
+	fmt.Printf("REACT_APP_VERSION_NAME = %s\n", versionName)
+	fmt.Printf("REACT_APP_VERSION_CODE = %s\n", versionCode)
+	fmt.Printf("REACT_APP_BUILD_NUMBER = %s\n", buildNumber)
 
 	cmdLog, err := exec.Command("bitrise", "envman", "add", "--key", "REACT_APP_VERSION_NAME", "--value", versionName).CombinedOutput()
 	if err != nil {
